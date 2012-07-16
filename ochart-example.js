@@ -121,7 +121,7 @@ window.onload = function(){
 	lines.setPlot(document.getElementById("plot2"));
     lines.setRaphael(r2);
     lines.setRect(0,0,500,400);
-    /*lines.grid.axis.x.name = "Time";
+    lines.grid.axis.x.name = "Time";
     lines.grid.axis.x.unit = "s";
     lines.grid.axis.x.range = [0,3];
     lines.grid.axis.x.type = "number";
@@ -143,25 +143,22 @@ window.onload = function(){
     lines.chartData = chartData;
 	lines.settings.line.fill = false;
 	lines.settings.line.glow = false;
-	
-    *///lines.drawChart();
-	
-	lines.loadChart("response.js");
-	//lines.drawLoadingIcon();
-	document.getElementById("makeBigger").onclick = function(){
-		var plot = document.getElementById("plot2");
-		plot.style.position = "absolute";
-		var ws = window.size();
-		plot.style.zIndex = 999;
-		plot.style.top = 20;
-		plot.style.left = 10;
-		var w = ws.width - 40;
-		var h = ws.height - 20;
-		plot.style.width = w;
-		plot.style.height = h;
-		lines.setRect(0, 0, w, h);
-		lines.redraw(Raphael("plot2", w, h));
-	};
-	//document.getElementById("makeBigger").onclick();
+    
+    lines.drawChart();
+
+    $("#makeBigger").click(function(){
+        var plot = document.getElementById("plot2");
+            plot.style.position = "absolute";
+            var ws = window.size();
+            plot.style.zIndex = 999;
+            plot.style.top = 20;
+            plot.style.left = 10;
+            var w = ws.width - 40;
+            var h = ws.height - 20;
+            plot.style.width = w;
+            plot.style.height = h;
+            lines.setRect(0, 0, w, h);
+            lines.redraw(Raphael("plot2", w, h));
+     });
 }
 

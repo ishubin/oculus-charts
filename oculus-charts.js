@@ -13,30 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-
-var  ajaxLoader = function(uri, callback, params){
-        var xmlHttpReq = false;
-         
-        if (window.XMLHttpRequest) 	{
-            xmlHttpReq = new XMLHttpRequest();
-        }
-        else if (window.ActiveXObject) 	{
-            xmlHttpReq = new ActiveXObject("Microsoft.XMLHTTP");
-        }
-        
-        xmlHttpReq.open('POST', uri, true);
-        
-        xmlHttpReq.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-        
-        xmlHttpReq.onreadystatechange = function() 	{
-            if (xmlHttpReq.readyState == 4)  {
-                callback(xmlHttpReq.responseText);
-            }
-        }
-        xmlHttpReq.send(params);
-    };
-
-
+ 
 window.size = function(){
 	var w = 0;
 	var h = 0;
@@ -586,74 +563,7 @@ OculusChart.addAll({
         }
     },
 
-	loadChart: function(uri, params){
-	
-        //this.drawLoadingIcon();
-		var chart = this;
-		ajaxLoader(uri, function(response) {
-			chart.chartData = eval("("+response+");");
-			
-			chart.grid = OculusGrid.create();
-			chart.grid.axis.x.name = chart.chartData.grid.xAxis.name;
-			chart.grid.axis.x.type = chart.chartData.grid.xAxis.type;
-			chart.grid.axis.x.unit = chart.chartData.grid.xAxis.unit;
-			chart.grid.axis.x.labels = chart.chartData.grid.xAxis.labels;
-			chart.grid.axis.x.range = chart.chartData.grid.xAxis.range;
-			
-			chart.grid.axis.y.name = chart.chartData.grid.yAxis.name;
-			chart.grid.axis.y.type = chart.chartData.grid.yAxis.type;
-			chart.grid.axis.y.unit = chart.chartData.grid.yAxis.unit;
-			chart.grid.axis.y.labels = chart.chartData.grid.yAxis.labels;
-			chart.grid.axis.y.range = chart.chartData.grid.yAxis.range;
-			
-			//Fetching the minimum and maximum values for both axises
-			if(chart.grid.axis.x.range==null || chart.grid.axis.y.range==null){
-				var xlimits = null;
-				var ylimits = null;
-				for(var i = 0; i<chart.chartData.dataset.length; i++){
-					for(var j=0; j<chart.chartData.dataset[i].data.length; j++){
-						var d = chart.chartData.dataset[i].data[j];
-						if(xlimits == null) {
-							xlimits = [d.x, d.x];
-						}
-						else {
-							if(xlimits[0]>d.x)xlimits[0] = d.x;
-							if(xlimits[1]<d.x)xlimits[1] = d.x;
-						}
-						if(ylimits == null) {
-							ylimits = [d.y, d.y];
-						}
-						else {
-							if(ylimits[0]>d.y)ylimits[0] = d.y;
-							if(ylimits[1]<d.y)ylimits[1] = d.y;
-						}
-					}
-				}
-				
-				if(chart.grid.axis.x.range==null){
-					chart.grid.axis.x.range = xlimits;
-				}
-				if(chart.grid.axis.y.range==null){
-					chart.grid.axis.y.range = ylimits;
-				}
-				
-				//Handling the case when the min = max
-				if(chart.grid.axis.x.range[0] == chart.grid.axis.x.range[1]){
-					var temp = chart.grid.axis.x.range[0];
-					chart.grid.axis.x.range[0] = temp-1;
-					chart.grid.axis.x.range[1] = temp+1;
-				}
-				if(chart.grid.axis.y.range[0] == chart.grid.axis.y.range[1]){
-					var temp = chart.grid.axis.y.range[0];
-					chart.grid.axis.y.range[0] = temp-1;
-					chart.grid.axis.y.range[1] = temp+1;
-				}
-			}
-			chart.drawChart();
-			chart.stopLoadingIcon();
-		}, params);
-	},
-    
+	    
     //Defines the rect where the chart will be rendered
     setRect: function(left, top, right, bottom){
         this.rect.top = top;
