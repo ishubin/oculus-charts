@@ -32,39 +32,40 @@ OculusObject.create = function(){
     return this.extend();
 }
 
-function getMousePosition(e) {
-	var posx = 0;
-	var posy = 0;
-	if (!e) var e = window.event;
-	if (e.pageX || e.pageY) 	{
-		posx = e.pageX;
-		posy = e.pageY;
-	}
-	else if (e.clientX || e.clientY) 	{
-		posx = e.clientX + document.body.scrollLeft
-			+ document.documentElement.scrollLeft;
-		posy = e.clientY + document.body.scrollTop
-			+ document.documentElement.scrollTop;
-	}
-	return {x:posx,y:posy};
+var OculusChartUtils = {
+    getMousePosition: function(e) {
+        var posx = 0;
+        var posy = 0;
+        if (!e) var e = window.event;
+        if (e.pageX || e.pageY) 	{
+            posx = e.pageX;
+            posy = e.pageY;
+        }
+        else if (e.clientX || e.clientY) 	{
+            posx = e.clientX + document.body.scrollLeft
+                + document.documentElement.scrollLeft;
+            posy = e.clientY + document.body.scrollTop
+                + document.documentElement.scrollTop;
+        }
+        return {x:posx,y:posy};
+    },
+    
+    getElementPosition:function(element) {
+        var posx=0;
+        var posy=0;
+        if(element) {
+            obj=element;
+            if(obj.offsetParent) {
+                do{
+                    posx+=obj.offsetLeft;
+                    posy+=obj.offsetTop;
+                }while(obj=obj.offsetParent)
+            }
+        }
+        return {x:posx, y:posy};
+    }
 }
 
-
-
-function getElementPosition(element) {
-	var posx=0;
-	var posy=0;
-	if(element) {
-		obj=element;
-		if(obj.offsetParent) {
-			do{
-				posx+=obj.offsetLeft;
-				posy+=obj.offsetTop;
-			}while(obj=obj.offsetParent)
-		}
-	}
-	return {x:posx, y:posy};
-}
 
 
 
@@ -630,8 +631,8 @@ OculusLineChart.addAll({
 		var grid = this.grid;
 		//Assigning onmousemove event in order to display hints on the points
 		this.getPlot().onmousemove = function(e){
-			var mp = getMousePosition(e);
-			var pp = getElementPosition(this);
+			var mp = OculusChartUtils.getMousePosition(e);
+			var pp = OculusChartUtils.getElementPosition(this);
 			//Calculating the relative mouse coordinates
 			mp.x = mp.x - pp.x;
 			mp.y = mp.y - pp.y;
@@ -773,8 +774,8 @@ OculusBarChart.addAll({
 			        var grid = this.grid;
 			        //Assigning onmousemove event in order to display hints on the points
 		            this.getPlot().onmousemove = function(e) {
-		                var mp = getMousePosition(e);
-			            var pp = getElementPosition(this);
+		                var mp = OculusChartUtils.getMousePosition(e);
+			            var pp = OculusChartUtils.getElementPosition(this);
 			            //Calculating the relative mouse coordinates
 			            mp.x = mp.x - pp.x;
 			            mp.y = mp.y - pp.y;
@@ -856,7 +857,6 @@ var OculusPieChart = OculusChart.extend();
 OculusPieChart.drawChart = function(){
 	var r = this.getRaphael();
 	
-	//r.path("M120,100 L100,100 A20,20 0 0,0 120,120 z").attr({stroke:"white", "stroke-width":3});
 	//Calculating the total amount for all datasets
 	var total = 0;
 	for(var i=0;i<this.chartData.dataset.length;i++){
