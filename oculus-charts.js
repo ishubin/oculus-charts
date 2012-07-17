@@ -467,15 +467,7 @@ OculusChart.addAll({
         return this.rect;
     },
 	
-	//Reference to element containing SVG content
-	setPlot: function(plot){
-		this.plot = plot;
-	},
-	getPlot: function(){
-		return this.plot;
-	},
-    
-    setRaphael: function (raphael){
+	setRaphael: function (raphael){
         this.raphael = raphael;
     },
     getRaphael: function (){
@@ -670,7 +662,6 @@ OculusLineChart.addAll({
             if(dataset!=null){
             
                 //Calculating the bezier curve points
-                
                 for(var j=0; j<dataset.length; j++){
                     var ds = dataset[j];
                     
@@ -707,15 +698,11 @@ OculusLineChart.addAll({
                             ox:ds.data[i].x,
                             oy:ds.data[i].y,
 							circle: r.circle(point.x,point.y,3).attr({fill:ds.color, stroke:"none"}).toFront(), 
-							//hint: this.drawHint(ds.data[i].x, ds.data[i].y),
 							x:point.x, 
 							y:point.y,
 							pathLine: pathLine,
 							lineChart: this,
 							onover: function(){
-								//this.hint.toFront();
-								//this.hint.attr({opacity:0});
-								
 								if(this.hint == null)   {
     								this.hint =  lineChart.drawHint(this.ox, this.oy).attr({"opacity":0.0});
     							}
@@ -854,95 +841,136 @@ OculusBarChart.addAll({
 
 
 var OculusPieChart = OculusChart.extend();
-OculusPieChart.drawChart = function(){
-	var r = this.getRaphael();
-	
-	//Calculating the total amount for all datasets
-	var total = 0;
-	for(var i=0;i<this.chartData.dataset.length;i++){
-		total += this.chartData.dataset[i].value;
-	}
-	if(total!=null && total>0){
-		//Calculating the radius of the pie
-		var radius = Math.round(Math.min(this.getRect().getWidth(), this.getRect().getHeight())/2-50);
-		
-		//Drawing each piece of pie
-		
-		var sx, sy;
-		var cx = Math.round(this.getRect().getWidth()/2);
-		var cy = Math.round(this.getRect().getHeight()/2);
-		var tx, ty, sx2, sy2;
-		
-		sx = cx + radius;
-		sy = cy;
-		var radius2 = 20;
-		sx2 = cx + radius + radius2;
-		sy2 = cy;
-		
-		var angle = 0;
-		var da = 0;
-		var globalPieces = new Object();
-		for(var i=0; i<this.chartData.dataset.length; i++){
-			var v = this.chartData.dataset[i].value;
-			
-			da = 2*Math.PI*v/total;
-			var textAngle = angle+da/2;
-			angle+=da;
-			tx = Math.round(radius*Math.cos(angle) + cx);
-			ty = Math.round(radius*Math.sin(angle) + cy);
-			
-			var tx2 = Math.round((radius+radius2)*Math.cos(angle) + cx);
-			var ty2 = Math.round((radius+radius2)*Math.sin(angle) + cy);
-			
-			var largeArcFlag = 0;
-			if(da>Math.PI){
-				largeArcFlag = 1;
-			}
-			
-			var piecePath = "M"+cx+","+cy+" L"+sx+","+sy+" A"+radius+","+radius+" 0 "+largeArcFlag+" 1 "+tx+","+ty+" z";
-			var selectedPath = "M"+cx+","+cy+" L"+(sx2)+","+(sy2)+" A"+(radius+radius2)+","+(radius+radius2)+" 0 "+largeArcFlag+" 1 "+tx2+","+ty2+" z";
-			var piece = r.path(piecePath).attr({stroke:"#d0d0d0", "stroke-width":3, fill:this.chartData.dataset[i].color, "fill-opacity":0.7});
-			var textValue = r.text(cx + Math.round(radius*0.7*Math.cos(textAngle)), cy + Math.round(radius*0.7*Math.sin(textAngle)), v).attr({stroke:"none", fill:"black","font-weight":"bold", "fill-opacity":0.0,"text-anchor":"middle", "font-size":14});
-			var textName = r.text(cx + Math.round(radius*1.3*Math.cos(textAngle)), cy + Math.round(radius*1.3*Math.sin(textAngle)), this.chartData.dataset[i].name).attr({stroke:"none", fill:"white","font-weight":"bold", "fill-opacity":0.0,"text-anchor":"middle", "font-size":14});
-			var hoverPiece = r.path(selectedPath).attr({stroke:"#d0d0d0", "stroke-width":3, fill:this.chartData.dataset[i].color, opacity:0.0})
-				.mouseover(function(){
-					var gp = globalPieces[this.id];
-					if(gp!=null){
-						gp.onover();
-					}
-				}).mouseout(function(){
-					var gp = globalPieces[this.id];
-					if(gp!=null){
-						gp.onout();
-					}
-				});
-			globalPieces[hoverPiece.id] = {
-				piece: piece,
-				piecePath: piecePath,
-				selectedPath: selectedPath,
-				hoverPiece: hoverPiece,
-				textValue: textValue,
-				textName: textName,
-				onover:  function(){
-					this.piece.animate({path:this.selectedPath},"500","bounce");
-					this.textValue.animate({"fill-opacity":1.0},"500",">");
-					this.textName.animate({"fill-opacity":1.0},"500",">");
-				},
-				onout: function(){
-					this.piece.animate({path:this.piecePath},"500",">");
-					this.textValue.animate({"fill-opacity":0.0},"500",">");
-					this.textName.animate({"fill-opacity":0.0},"500",">");
-				}
-			};
-			
-			sx = tx;
-			sy = ty;
-			
-			sx2 = tx2;
-			sy2 = ty2;
-		}
-		for(gp in globalPieces){
-			globalPieces[gp].hoverPiece.toFront();
-		}
-	}
-};
+OculusPieChart.addAll({
+    super_create : OculusChart.create,
+    create: function(){
+        var chart = this.super_create();
+
+        chart.settings = {
+            line: {
+                width: 1,
+                color: "#333"
+            },
+            outterText: {
+                weight: "bold",
+                size: "14px",
+                color: "black"
+            },
+            innerText: {
+                weight: "bold",
+                size: "14px",
+                color: "white"
+            }
+        };
+        return chart;
+    },
+    drawChart: function(){
+        var r = this.getRaphael();
+        
+        //Calculating the total amount for all datasets
+        var total = 0;
+        for(var i=0;i<this.chartData.dataset.length;i++){
+            total += this.chartData.dataset[i].value;
+        }
+        if(total!=null && total>0){
+            //Calculating the radius of the pie
+            var radius = Math.round(Math.min(this.getRect().getWidth(), this.getRect().getHeight())/2-50);
+            
+            //Drawing each piece of pie
+            
+            var sx, sy;
+            var cx = Math.round(this.getRect().getWidth()/2);
+            var cy = Math.round(this.getRect().getHeight()/2);
+            var tx, ty, sx2, sy2;
+            
+            sx = cx + radius;
+            sy = cy;
+            var radius2 = 20;
+            sx2 = cx + radius + radius2;
+            sy2 = cy;
+            
+            var angle = 0;
+            var da = 0;
+            var globalPieces = new Object();
+            for(var i=0; i<this.chartData.dataset.length; i++){
+                var v = this.chartData.dataset[i].value;
+                
+                da = 2*Math.PI*v/total;
+                var textAngle = angle+da/2;
+                angle+=da;
+                tx = Math.round(radius*Math.cos(angle) + cx);
+                ty = Math.round(radius*Math.sin(angle) + cy);
+                
+                var tx2 = Math.round((radius+radius2)*Math.cos(angle) + cx);
+                var ty2 = Math.round((radius+radius2)*Math.sin(angle) + cy);
+                
+                var largeArcFlag = 0;
+                if(da>Math.PI){
+                    largeArcFlag = 1;
+                }
+                
+                var piecePath = "M"+cx+","+cy+" L"+sx+","+sy+" A"+radius+","+radius+" 0 "+largeArcFlag+" 1 "+tx+","+ty+" z";
+                var selectedPath = "M"+cx+","+cy+" L"+(sx2)+","+(sy2)+" A"+(radius+radius2)+","+(radius+radius2)+" 0 "+largeArcFlag+" 1 "+tx2+","+ty2+" z";
+                var piece = r.path(piecePath).attr({stroke:this.settings.line.color, "stroke-width":this.settings.line.width, fill:this.chartData.dataset[i].color, "fill-opacity":0.7});
+                var textValue = r.text(cx + Math.round(radius*0.7*Math.cos(textAngle)), cy + Math.round(radius*0.7*Math.sin(textAngle)), v)
+                    .attr({
+                        stroke: "none", 
+                        fill: this.settings.innerText.color,
+                        "font-weight": this.settings.innerText.weight, 
+                        "fill-opacity": 0.0,
+                        "text-anchor": "middle", 
+                        "font-size": this.settings.innerText.size
+                });
+                var textName = r.text(cx + Math.round(radius*1.3*Math.cos(textAngle)), cy + Math.round(radius*1.3*Math.sin(textAngle)), this.chartData.dataset[i].name)
+                    .attr({
+                        stroke: "none", 
+                        fill: this.settings.outterText.color,
+                        "font-weight": this.settings.outterText.weight, 
+                        "fill-opacity": 0.0,
+                        "text-anchor": "middle", 
+                        "font-size": this.settings.outterText.size});
+                var hoverPiece = r.path(selectedPath).attr({stroke:this.settings.line.color, "stroke-width":this.settings.line.width, fill:this.chartData.dataset[i].color, opacity:0.0})
+                    .mouseover(function(){
+                        var gp = globalPieces[this.id];
+                        if(gp!=null){
+                            gp.onover();
+                        }
+                    })
+                    .mouseout(function(){
+                        var gp = globalPieces[this.id];
+                        if(gp!=null){
+                            gp.onout();
+                        }
+                    });
+                globalPieces[hoverPiece.id] = {
+                    piece: piece,
+                    piecePath: piecePath,
+                    selectedPath: selectedPath,
+                    hoverPiece: hoverPiece,
+                    textValue: textValue,
+                    textName: textName,
+                    onover:  function(){
+                        this.piece.animate({path:this.selectedPath},"500","bounce");
+                        this.textValue.animate({"fill-opacity":1.0},"500",">");
+                        this.textName.animate({"fill-opacity":1.0},"500",">");
+                    },
+                    onout: function(){
+                        this.piece.animate({path:this.piecePath},"500",">");
+                        this.textValue.animate({"fill-opacity":0.0},"500",">");
+                        this.textName.animate({"fill-opacity":0.0},"500",">");
+                    }
+                };
+                
+                sx = tx;
+                sy = ty;
+                
+                sx2 = tx2;
+                sy2 = ty2;
+            }
+            for(gp in globalPieces){
+                globalPieces[gp].hoverPiece.toFront();
+            }
+        }
+    }
+});
+

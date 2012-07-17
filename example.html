@@ -1,0 +1,57 @@
+<html>
+    <head>
+        <title>Oculus Charts Example</title>
+        <script type="text/javascript" src="raphael-min.js"></script>
+		<script type="text/javascript" src="jquery-1.7.2.min.js"></script>
+		<script type="text/javascript" src="oculus-charts.js"></script>
+
+        <style>
+            body {
+                background:#d0d0d0;
+            }
+            .chart {
+                display:block;
+                width:500px;
+                height:500px;
+            }
+        </style>
+
+            </head>
+
+    <body>
+        <script>
+            function drawPieChart() {
+                var pie = OculusPieChart.create();
+                pie.setRaphael(Raphael("plotPie", 400, 400));
+                pie.setRect(0,0,400,400);
+                pie.chartData = {
+                    dataset:[
+                        {
+                            name: "Fruits",
+                            color: "#aa0000",
+                            value:140
+                        },
+                        {
+                            name: "Vegetables",
+                            color: "#00aa00",
+                            value:30
+                        },
+                        {
+                            name: "Meat",
+                            color: "#0000aa",
+                            value:30
+                        }
+                    ]
+                };
+                pie.settings.line.width = 1;
+                pie.drawChart();
+            }
+            $(function(){
+                drawPieChart();
+            });
+        </script>
+
+        <div id="plotPie" class="chart"></plot>
+
+    </body>
+</html>
