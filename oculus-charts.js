@@ -854,12 +854,14 @@ OculusPieChart.addAll({
             outterText: {
                 weight: "bold",
                 size: "14px",
-                color: "black"
+                color: "black",
+                showAlways:false
             },
             innerText: {
                 weight: "bold",
                 size: "14px",
-                color: "white"
+                color: "white",
+                showAlways:false
             }
         };
         return chart;
@@ -912,21 +914,29 @@ OculusPieChart.addAll({
                 var piecePath = "M"+cx+","+cy+" L"+sx+","+sy+" A"+radius+","+radius+" 0 "+largeArcFlag+" 1 "+tx+","+ty+" z";
                 var selectedPath = "M"+cx+","+cy+" L"+(sx2)+","+(sy2)+" A"+(radius+radius2)+","+(radius+radius2)+" 0 "+largeArcFlag+" 1 "+tx2+","+ty2+" z";
                 var piece = r.path(piecePath).attr({stroke:this.settings.line.color, "stroke-width":this.settings.line.width, fill:this.chartData.dataset[i].color, "fill-opacity":0.7});
+                var textValueOpacity = 0.0;
+                if ( this.settings.innerText.showAlways ) {
+                    textValueOpacity = 1.0;
+                }
                 var textValue = r.text(cx + Math.round(radius*0.7*Math.cos(textAngle)), cy + Math.round(radius*0.7*Math.sin(textAngle)), v)
                     .attr({
                         stroke: "none", 
                         fill: this.settings.innerText.color,
                         "font-weight": this.settings.innerText.weight, 
-                        "fill-opacity": 0.0,
+                        "fill-opacity": textValueOpacity,
                         "text-anchor": "middle", 
                         "font-size": this.settings.innerText.size
                 });
+                var textNameOpacity = 0.0;
+                if ( this.settings.outterText.showAlways ) {
+                    textNameOpacity = 1.0;
+                }
                 var textName = r.text(cx + Math.round(radius*1.3*Math.cos(textAngle)), cy + Math.round(radius*1.3*Math.sin(textAngle)), this.chartData.dataset[i].name)
                     .attr({
                         stroke: "none", 
                         fill: this.settings.outterText.color,
                         "font-weight": this.settings.outterText.weight, 
-                        "fill-opacity": 0.0,
+                        "fill-opacity": textNameOpacity,
                         "text-anchor": "middle", 
                         "font-size": this.settings.outterText.size});
                 var hoverPiece = r.path(selectedPath).attr({stroke:this.settings.line.color, "stroke-width":this.settings.line.width, fill:this.chartData.dataset[i].color, opacity:0.0})
@@ -943,6 +953,7 @@ OculusPieChart.addAll({
                         }
                     });
                 globalPieces[hoverPiece.id] = {
+                    settings: this.settings,
                     piece: piece,
                     piecePath: piecePath,
                     selectedPath: selectedPath,
@@ -951,13 +962,21 @@ OculusPieChart.addAll({
                     textName: textName,
                     onover:  function(){
                         this.piece.animate({path:this.selectedPath},"500","bounce");
-                        this.textValue.animate({"fill-opacity":1.0},"500",">");
-                        this.textName.animate({"fill-opacity":1.0},"500",">");
+                        if ( !this.settings.innerText.showAlways ) {
+                            this.textValue.animate({"fill-opacity":1.0},"500",">");
+                        }
+                        if ( !this.settings.outterText.showAlways ) {
+                            this.textName.animate({"fill-opacity":1.0},"500",">");
+                        }
                     },
                     onout: function(){
                         this.piece.animate({path:this.piecePath},"500",">");
-                        this.textValue.animate({"fill-opacity":0.0},"500",">");
-                        this.textName.animate({"fill-opacity":0.0},"500",">");
+                        if ( !this.settings.innerText.showAlways ) {
+                            this.textValue.animate({"fill-opacity":0.0},"500",">");
+                        }
+                        if ( !this.settings.outterText.showAlways ) {
+                            this.textName.animate({"fill-opacity":0.0},"500",">");
+                        }
                     }
                 };
                 
