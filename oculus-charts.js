@@ -257,14 +257,7 @@ OculusGrid.addAll({
         }
     },
     
-    setRaphael: function(raphael) {
-        this.raphael = raphael;
-    },
-    getRaphael: function(){
-        return this.raphael;
-    },
-    
-	/**
+    /**
 	* Transforms chart coords to screen coords.
 	* returns the following structure:
 	* {
@@ -381,7 +374,7 @@ OculusGrid.addAll({
 /*********************************************************/
 var OculusChart = OculusObject.extend();
 OculusChart.addAll({
-    create: function(){
+    create: function(elementId, width, height) {
         var chart = this.extend();
         chart.name = "Undefined chart";
         chart.grid = OculusGrid.create();
@@ -407,7 +400,10 @@ OculusChart.addAll({
                 strokeWidth:3
             }
         };
-        chart.rect = Rect.create(0,0,300,100);
+        chart.rect = Rect.create(0,0,width,height);
+
+        chart.raphael = Raphael(elementId, width, height);
+        chart.plot = document.getElementById(elementId);
         return chart;
     },
     
@@ -416,7 +412,7 @@ OculusChart.addAll({
         if(this.loadingIconTimer!=null) {
             this.stopLoadingIcon();
         }
-        var r = this.getRaphael();
+        var r = this.raphael;
         var cx = Math.round(this.getRect().getWidth()/2);
         var cy = Math.round(this.getRect().getHeight()/2);
         var mr = Math.min(this.getRect().getWidth(), this.getRect().getHeight());
@@ -467,14 +463,8 @@ OculusChart.addAll({
         return this.rect;
     },
 	
-	setRaphael: function (raphael){
-        this.raphael = raphael;
-    },
-    getRaphael: function (){
-        return this.raphael;
-    },
-    drawChart: function (){
-        var r = this.getRaphael();
+	drawChart: function (){
+        var r = this.raphael;
         var tx = Math.round((this.rect.right - this.rect.left)/2);
         var ty = this.rect.top +this.settings.chartHeader.fontSize;
         r.text(tx, ty, this.name).attr({stroke:"none", "text-anchor":"middle", fill:this.settings.textColor, "font-size":this.settings.chartHeader.fontSize, "font-weight":this.settings.chartHeader.fontWeight});
@@ -494,7 +484,7 @@ OculusChart.addAll({
         //TODO this should be calculated based on the maximum height of text labels for "x" axis
         y2 = this.rect.bottom - 100;
         this.grid.setRect(x1,y1,x2,y2);
-        this.grid.setRaphael(this.getRaphael());
+        this.grid.raphael = this.raphael;
 		if(this.grid != null){
 			this.grid.drawGrid();
 		}
@@ -520,8 +510,8 @@ OculusChart.addAll({
 	},
 	
 	//Creates a hint box for the specified value on a plot, fills it with text and returns a refference to this Raphael object
-	drawHint: function (x, y){
-	    var r = this.getRaphael();
+	drawHint: function (x, y, hintText){
+	    var r = this.raphael;
 		var p = this.grid.translateToScreen(x, y);
 		
 		var location = this.getHintType(x, y);
@@ -563,6 +553,9 @@ OculusChart.addAll({
 	        r.text(tx, ty + fontSize + 2, "X:").attr({stroke:"none", fill:sh.fontLabelColor, "font-weight":"bold", "font-size": fontSize, "text-anchor": "start"}),
 	        r.text(tx + fontSize + 5, ty + fontSize + 2, textRowX).attr({stroke:"none", fill:sh.fontColor, "font-size": fontSize, "text-anchor": "start"})
 	    ];
+        if ( hintText != null && hintText != "" ) {
+            texts.push(r.text(tx + fontSize + 5, ty + 2* (fontSize  + 2), hintText).attr({stroke:"none", fill:sh.fontColor, "font-size": fontSize, "text-anchor": "start"}));
+        }
 	    
 	    var htextset = r.set();
 	    for (var i=0; i<texts.length; i++){
@@ -588,10 +581,10 @@ OculusChart.addAll({
 	},
 	//Clears everything on the plot and draws chart again
 	redraw: function (newRaphael){
-		var r = this.getRaphael();
+		var r = this.raphael;
 		r.clear();
-		if(newRaphael!=null){
-			this.setRaphael(newRaphael);
+		if ( newRaphael != null ) {
+			this.raphael = newRaphael;
 		}
 		this.drawChart();
 	}
@@ -604,8 +597,8 @@ OculusChart.addAll({
 var OculusLineChart = OculusChart.extend();
 OculusLineChart.addAll({
     super_create : OculusChart.create,
-    create: function(){
-        var chart = this.super_create();
+    create: function(elementId, width, height){
+        var chart = this.super_create(elementId, width, height);
         chart.settings.line = {
 	        fill: false,
 	        glow: false
@@ -619,10 +612,10 @@ OculusLineChart.addAll({
         
 		//Used to check if the new point should be shown
         var previousPoint = null;
-		var globalLineChartPoints = new Array();
+		var globalLineChartPoints = [];
 		var grid = this.grid;
 		//Assigning onmousemove event in order to display hints on the points
-		this.getPlot().onmousemove = function(e){
+		this.plot.onmousemove = function(e){
 			var mp = OculusChartUtils.getMousePosition(e);
 			var pp = OculusChartUtils.getElementPosition(this);
 			//Calculating the relative mouse coordinates
@@ -655,7 +648,7 @@ OculusLineChart.addAll({
 			    previousPoint = null;
 			}
 		};
-		var r = this.getRaphael();
+		var r = this.raphael;
 		//Drawing lines
         if(this.chartData!=null){
             var dataset = this.chartData.dataset;
@@ -697,6 +690,7 @@ OculusLineChart.addAll({
                         globalLineChartPoints[globalLineChartPoints.length] = {
                             ox:ds.data[i].x,
                             oy:ds.data[i].y,
+                            hintText:ds.data[i].hint,
 							circle: r.circle(point.x,point.y,3).attr({fill:ds.color, stroke:"none"}).toFront(), 
 							x:point.x, 
 							y:point.y,
@@ -704,7 +698,7 @@ OculusLineChart.addAll({
 							lineChart: this,
 							onover: function(){
 								if(this.hint == null)   {
-    								this.hint =  lineChart.drawHint(this.ox, this.oy).attr({"opacity":0.0});
+    								this.hint =  lineChart.drawHint(this.ox, this.oy, this.hintText).attr({"opacity":0.0});
     							}
     							this.pathLine.toFront();
 								this.hint.toFront().animate({"fill-opacity":0.8, "opacity":1.0},500, ">");
@@ -720,9 +714,7 @@ OculusLineChart.addAll({
                     }
                 }
             }
-            else alert("The chart dataset wasn't provided");
         }
-        else alert("The chart data wasn't provided");
     }
 });
 
@@ -745,7 +737,7 @@ OculusBarChart.addAll({
 			
 			//calling the parents method in order to draw the grid and other chart related stuff
 			this.super_drawChart();
-			var r = this.getRaphael();
+			var r = this.raphael;
 			
 			//Drawing bars
 			if(this.chartData!=null){
@@ -760,7 +752,7 @@ OculusBarChart.addAll({
 			        var globalLineChartPoints = new Array();
 			        var grid = this.grid;
 			        //Assigning onmousemove event in order to display hints on the points
-		            this.getPlot().onmousemove = function(e) {
+		            this.plot.onmousemove = function(e) {
 		                var mp = OculusChartUtils.getMousePosition(e);
 			            var pp = OculusChartUtils.getElementPosition(this);
 			            //Calculating the relative mouse coordinates
@@ -808,6 +800,7 @@ OculusBarChart.addAll({
 							globalLineChartPoints[globalLineChartPoints.length] = {
 							    ox: ds.data[i].x, 
 							    oy: ds.data[i].y,
+                                hintText: ds.data[i].hint,
 							    bar: s,
 							    bw: bw,
 							    offset: offset,
@@ -817,7 +810,7 @@ OculusBarChart.addAll({
 							        this.light.animate({"opacity":0.0}, 500, ">");
 									this.bar.animate({"fill-opacity":0.3}, 500, ">");
 									if(this.hint == null){
-							            this.hint = barChart.drawHint(this.ox, this.oy).attr({translation:Math.round(this.offset+bw/2)+",0"})
+							            this.hint = barChart.drawHint(this.ox, this.oy, this.hintText).attr({translation:Math.round(this.offset+bw/2)+",0"})
 									}
 									this.hint.toFront();
 							    },
@@ -843,8 +836,8 @@ OculusBarChart.addAll({
 var OculusPieChart = OculusChart.extend();
 OculusPieChart.addAll({
     super_create : OculusChart.create,
-    create: function(){
-        var chart = this.super_create();
+    create: function(elementId, width, height){
+        var chart = this.super_create(elementId, width, height);
 
         chart.settings = {
             line: {
@@ -867,7 +860,7 @@ OculusPieChart.addAll({
         return chart;
     },
     drawChart: function(){
-        var r = this.getRaphael();
+        var r = this.raphael;
         
         //Calculating the total amount for all datasets
         var total = 0;

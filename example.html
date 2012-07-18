@@ -9,21 +9,64 @@
             body {
                 background:#d0d0d0;
             }
-            .chart {
-                display:block;
-                width:500px;
-                height:500px;
+            h2 { 
+                font-family:helvetica;
+                font-size:2em;
+                font-weight:bold;
+                text-transform:uppercase;
+                color:black;
+                text-shadow:0px 0px 2px #fff;
+                margin:0px;
             }
+            .chart-container {
+                clear: both;
+                padding-top: 10px;
+            }
+            .chart {
+                margin-left: 15px;
+                border:1px solid #777;
+                border-radius:5px;
+                width:400px;
+                height:400px;
+                background:#ddd;
+                box-shadow:1px 1px 10px #aaa;
+                float:left;
+            }
+            .source {
+                float:left;
+                display:block;
+                background: #333;
+                width:500px;
+                border-radius:5px;
+                padding:5px;
+                box-shadow:inset 2px 2px 5px black;
+                border:1px 1px solid black;
+            }
+            .source pre {
+                font-size:12pt;
+                font-family:Consolas,Monaco,"Lucida Console",monospace;
+                font-weight:normal;
+                color: #ddd;
+                text-shadow:1px 1px 1px black;
+            }
+            .source pre .op {
+                color:#0f0;
+            }
+            .source pre .str {
+                color:#DB7209;
+            }
+            .source pre .num{
+                color:#f0f;
+            }
+
         </style>
 
-            </head>
+    </head>
 
     <body>
         <script>
             function drawPieChart() {
-                var pie = OculusPieChart.create();
-                pie.setRaphael(Raphael("plotPie", 400, 400));
-                pie.setRect(0,0,400,400);
+                var pie = OculusPieChart.create("plotPie", 400, 400);
                 pie.chartData = {
                     dataset:[
                         {
@@ -44,16 +87,102 @@
                     ]
                 };
                 pie.settings.line.width = 1;
+                pie.settings.line.color = "black";
                 pie.settings.innerText.showAlways = true;
                 pie.settings.outterText.showAlways = false;
                 pie.drawChart();
             }
+            function drawLineChart() {
+                var lines = OculusLineChart.create("plotLine", 400, 400);
+                lines.grid.axis.x.name = "Time";
+                lines.grid.axis.x.unit = "s";
+                lines.grid.axis.x.range = [0,4];
+                lines.grid.axis.x.type = "number";
+                
+                lines.grid.axis.y.name = "Percent";
+                lines.grid.axis.y.unit = "%";
+                lines.grid.axis.y.range = [-2.0,2.5];
+                
+                var chartData = {
+                    dataset:[
+                        {
+                            name: "Some data1",
+                            color: "#ff00ff",
+                            description: "Detailed description of this dataset",
+                            data:[
+                                {x:0,   y:1.2,hint:"Small hint"},
+                                {x:1,y:1.6},
+                                {x:2,y:1.8},
+                                {x:3, y:2.0},
+                                {x:4, y:2.0}
+                            ]
+                        },
+                        {
+                            name: "Some data1",
+                            color: "#00ff00",
+                            description: "Detailed description of this dataset",
+                            data:[
+                                {x:0,   y:-1.2},
+                                {x:1,y:0.6},
+                                {x:2,y:-1.8},
+                                {x:3, y:1.0},
+                                {x:4, y:2.5}
+                            ]
+                        }
+                    ]
+                };
+                lines.chartData = chartData;
+                lines.settings.line.fill = false;
+                lines.settings.line.glow = false;
+                lines.drawChart();
+            }
+            
             $(function(){
                 drawPieChart();
+                drawLineChart();
             });
-        </script>
+            </script>
 
-        <div id="plotPie" class="chart"></plot>
+        <div class="chart-container"> 
+            <h2>Pie Chart</h2>
+            <div class="source">
+<pre><span class='op'>var</span> pie = OculusPieChart.create(<span class='str'>"plotPie"</span>, <span class='num'>400</span>, <span class='num'>400</span>);
+pie.chartData = {
+    dataset:[
+        {
+            name: <span class='str'>"Fruits"</span>,
+            color: <span class='str'>"#aa0000"</span>,
+            value: <span class='num'>140</span>
+        },
+        {
+            name: <span class='str'>"Vegetables"</span>,
+            color: <span class='str'>"#00aa00"</span>,
+            value: <span class='num'>30</span>
+        },
+        {
+            name: <span class='str'>"Meat"</span>,
+            color: <span class='str'>"#0000aa"</span>,
+            value: <span class='num'>30</span>
+        }
+    ]
+};
+pie.settings.line.width = <span class='num'>1</span>;
+pie.settings.line.color = <span class='str'>"black"</span>;
+pie.settings.innerText.showAlways = <span class='op'>true</span>;
+pie.settings.outterText.showAlways = <span class='op'>false</span>;
+pie.drawChart();</pre>
+            </div>
+            <div id="plotPie" class="chart"></div>
 
+        </div>
+        
+        <div class="chart-container"> 
+            <h2>Line chart</h2>
+            <div class="source">
+<pre>
+</pre>
+            </div>
+            <div id="plotLine" class="chart"></div>
+        </div>
     </body>
 </html>
