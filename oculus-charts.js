@@ -384,13 +384,6 @@ OculusChart.addAll({
                 fontSize:15,
                 fontWeight:"bold"
             },
-            mainRect:{
-                on:true,
-                color:"gray",
-                radius:5,
-                strokeWidth:1,
-			    background:"black"
-            },
             hint:{
                 fontSize:12,
 			    fontColor: "white",
@@ -401,10 +394,27 @@ OculusChart.addAll({
             }
         };
         chart.rect = Rect.create(0,0,width,height);
-
+        chart.changeGridRect(width, height);
         chart.raphael = Raphael(elementId, width, height);
         chart.plot = document.getElementById(elementId);
         return chart;
+    },
+
+    changeGridRect: function (width, height) {
+        //Calculating grid rect
+        var x1=0,y1=0,x2=0,y2=0;
+        //Calculating the top of the grid rect based on chart header text height
+
+        var ty = this.rect.top + this.settings.chartHeader.fontSize;
+        y1 = ty + this.settings.chartHeader.fontSize+20;
+        
+        //TODO This should be later calculated based on the maximum width of text labels for "y" axis
+        x1 = this.rect.left + 120;
+        x2 = this.rect.right - 20;
+        
+        //TODO this should be calculated based on the maximum height of text labels for "x" axis
+        y2 = this.rect.bottom - 100;
+        this.grid.setRect(x1,y1,x2,y2);
     },
     
     //Returns the instance of timer for animating the loading icon
@@ -469,21 +479,6 @@ OculusChart.addAll({
         var ty = this.rect.top +this.settings.chartHeader.fontSize;
         r.text(tx, ty, this.name).attr({stroke:"none", "text-anchor":"middle", fill:this.settings.textColor, "font-size":this.settings.chartHeader.fontSize, "font-weight":this.settings.chartHeader.fontWeight});
         
-        var mainRect = this.settings.mainRect;
-        if(mainRect.on){
-            r.rect(this.rect.left, this.rect.top, this.rect.getWidth()-1, this.rect.getHeight()-1, mainRect.radius).attr({stroke:mainRect.color,fill:mainRect.background, "stroke-width":mainRect.strokeWidth});
-        }
-        
-        //Calculating grid rect
-        var x1=0,y1=0,x2=0,y2=0;
-        //Calculating the top of the grid rect based on chart header text height
-        y1 = ty + this.settings.chartHeader.fontSize+20;
-        //TODO This should be later calculated based on the maximum width of text labels for "y" axis
-        x1 = this.rect.left+120;
-        x2 = this.rect.right-20;
-        //TODO this should be calculated based on the maximum height of text labels for "x" axis
-        y2 = this.rect.bottom - 100;
-        this.grid.setRect(x1,y1,x2,y2);
         this.grid.raphael = this.raphael;
 		if(this.grid != null){
 			this.grid.drawGrid();
@@ -510,7 +505,7 @@ OculusChart.addAll({
 	},
 	
 	//Creates a hint box for the specified value on a plot, fills it with text and returns a refference to this Raphael object
-	drawHint: function (x, y, hintText){
+	drawHint: function (x, y, caption, color, hintText){
 	    var r = this.raphael;
 		var p = this.grid.translateToScreen(x, y);
 		
@@ -548,13 +543,15 @@ OculusChart.addAll({
 	    
 		var sh = this.settings.hint;
 		
-	    var texts = [r.text(tx, ty, "Y:").attr({stroke:"none", fill:sh.fontLabelColor, "font-weight":"bold", "font-size": fontSize, "text-anchor": "start"}),
-	        r.text(tx + fontSize + 5, ty, textRowY).attr({stroke:"none", fill:sh.fontColor, "font-size": fontSize, "text-anchor": "start"}),
-	        r.text(tx, ty + fontSize + 2, "X:").attr({stroke:"none", fill:sh.fontLabelColor, "font-weight":"bold", "font-size": fontSize, "text-anchor": "start"}),
-	        r.text(tx + fontSize + 5, ty + fontSize + 2, textRowX).attr({stroke:"none", fill:sh.fontColor, "font-size": fontSize, "text-anchor": "start"})
+	    var texts = [
+            r.text(tx, ty, caption).attr({stroke:"none", fill:color, "font-weight":"bold", "font-size": fontSize, "text-anchor": "start"}),
+            r.text(tx, ty + fontSize + 2, "Y:").attr({stroke:"none", fill:sh.fontLabelColor, "font-weight":"bold", "font-size": fontSize, "text-anchor": "start"}),
+	        r.text(tx + fontSize + 5, ty + fontSize + 2, textRowY).attr({stroke:"none", fill:sh.fontColor, "font-size": fontSize, "text-anchor": "start"}),
+	        r.text(tx, ty + 2*(fontSize + 2), "X:").attr({stroke:"none", fill:sh.fontLabelColor, "font-weight":"bold", "font-size": fontSize, "text-anchor": "start"}),
+	        r.text(tx + fontSize + 5, ty + 2*(fontSize + 2), textRowX).attr({stroke:"none", fill:sh.fontColor, "font-size": fontSize, "text-anchor": "start"})
 	    ];
         if ( hintText != null && hintText != "" ) {
-            texts.push(r.text(tx + fontSize + 5, ty + 2* (fontSize  + 2), hintText).attr({stroke:"none", fill:sh.fontColor, "font-size": fontSize, "text-anchor": "start"}));
+            texts.push(r.text(tx + fontSize + 5, ty + 3 * (fontSize  + 2), hintText).attr({stroke:"none", fill:sh.fontColor, "font-size": fontSize, "text-anchor": "start"}));
         }
 	    
 	    var htextset = r.set();
@@ -690,6 +687,8 @@ OculusLineChart.addAll({
                         globalLineChartPoints[globalLineChartPoints.length] = {
                             ox:ds.data[i].x,
                             oy:ds.data[i].y,
+                            caption: ds.name,
+                            color: ds.color,
                             hintText:ds.data[i].hint,
 							circle: r.circle(point.x,point.y,3).attr({fill:ds.color, stroke:"none"}).toFront(), 
 							x:point.x, 
@@ -698,7 +697,7 @@ OculusLineChart.addAll({
 							lineChart: this,
 							onover: function(){
 								if(this.hint == null)   {
-    								this.hint =  lineChart.drawHint(this.ox, this.oy, this.hintText).attr({"opacity":0.0});
+    								this.hint =  lineChart.drawHint(this.ox, this.oy, this.caption, this.color, this.hintText).attr({"opacity":0.0});
     							}
     							this.pathLine.toFront();
 								this.hint.toFront().animate({"fill-opacity":0.8, "opacity":1.0},500, ">");
@@ -728,6 +727,16 @@ OculusLineChart.addAll({
 /*****************************************************************/
 var OculusBarChart = OculusChart.extend();
 OculusBarChart.addAll({
+    super_create : OculusChart.create,
+    create: function(elementId, width, height){
+        var chart = this.super_create(elementId, width, height);
+        chart.settings.gloss = {
+            on: false,
+            value: 0.3,
+            color: "#fff"
+        }
+        return chart;
+    },
     super_drawChart: OculusChart.drawChart,
     drawChart: function (){
 		if(this.grid.axis.x.type == "label"){ 
@@ -791,31 +800,43 @@ OculusBarChart.addAll({
 							
 							var h = this.grid.rect.bottom - point.y;
 							var s = r.set();
-							var bar = r.rect(point.x + offset, point.y, bw, h).attr({stroke:ds.color, "stroke-width":1, fill:ds.color});
+							
+                            var bar = r.rect(point.x + offset, point.y, bw, h).attr({stroke:ds.color, "stroke-width":1, fill:ds.color});
 							s.push(bar);
-							var light = r.rect(point.x + offset+2, point.y+2, bw/2, h-2).attr({stroke:"none", fill:"#ffffff", "opacity":0.3});
-							s.push(light);
+                            
+                            var light = null;
+                            if ( this.settings.gloss.on ) {
+    							light = r.rect(point.x + offset+2, point.y+2, bw/2, h-2).attr({stroke:"none", fill:this.settings.gloss.color, "opacity":this.settings.gloss.value});
+    							s.push(light);
+                            }
 							
 							var barChart = this;
 							globalLineChartPoints[globalLineChartPoints.length] = {
 							    ox: ds.data[i].x, 
 							    oy: ds.data[i].y,
+                                settings: barChart.settings,
                                 hintText: ds.data[i].hint,
+                                caption: ds.name,
+                                color: ds.color,
 							    bar: s,
 							    bw: bw,
 							    offset: offset,
 								light: light,
 							    rect:[point.x + offset, point.y, bw + point.x + offset, h + point.y],
 							    onover: function(){
-							        this.light.animate({"opacity":0.0}, 500, ">");
-									this.bar.animate({"fill-opacity":0.3}, 500, ">");
+                                    if ( this.light != null ) {
+							            this.light.animate({"opacity":0.0}, 500, ">");
+                                    }
+									this.bar.animate({"fill-opacity":this.settings.gloss.value}, 500, ">");
 									if(this.hint == null){
-							            this.hint = barChart.drawHint(this.ox, this.oy, this.hintText).attr({translation:Math.round(this.offset+bw/2)+",0"})
+							            this.hint = barChart.drawHint(this.ox, this.oy, this.caption, this.color, this.hintText).attr({translation:Math.round(this.offset+bw/2)+",0"})
 									}
 									this.hint.toFront();
 							    },
 							    onout: function(){
-							        this.light.animate({"opacity":0.3}, 500, ">");
+                                    if ( this.light != null ) {
+							            this.light.animate({"opacity":this.settings.gloss.value}, 500, ">");
+                                    }
 							        this.bar.animate({"fill-opacity":1.0}, 500, ">");
 									this.hint.remove();
 									this.hint = null;
@@ -824,11 +845,8 @@ OculusBarChart.addAll({
 						}
 					}
 				}
-				else alert("The chart dataset wasn't provided");
 			}
-			else alert("The chart data wasn't provided");
 		}
-		else alert("The x axis should be of type \"label\"");
 	}
 });
 
