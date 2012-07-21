@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Oculus Charts Example</title>
+        
+		<script type="text/javascript" src="oculus-charts-1.0-min.js"></script>
+
+        <style>
+            body {
+                background:#e0e0e0;
+                font-family:helvetica;
+                font-size:1.1em;
+                color: #333;
+            }
+            #content {
+                width:1060px;
+            }
+            a, a:visited, a:active {
+                font-family:helvetica;
+                color: #254263;
+                text-decoration: none;
+                font-weight: bold;
+                text-decoration: none;
+                text-shadow: 0px 1px 0px #fff;
+            }
+            a:hover {
+                color: #AD4A07;
+            }
+            h1, h2 { 
+                font-family:helvetica;
+                font-weight:bold;
+                text-transform:uppercase;
+                
+                text-shadow:0px 0px 2px #fff;
+                margin:0px;
+            }
+            h1 { 
+                font-size:2.5em;
+                color: #254263;
+                margin-bottom: 20px;
+            }
+            span.header-first {
+                color: #254263;
+                text-shadow: -1px -1px 0px #011E40, 0px 1px 0px #fff;
+            }
+            span.header-second {
+                color: #F77C00;
+                text-shadow: -1px -1px 0px #CF6700, 0px 1px 0px #fff;
+            }
+            h2 {
+                margin-top: 30px;
+                margin-bottom: 10px;
+                font-size:2em;
+                color: #254263;
+            }
+            .chart-container {
+                clear: both;
+                padding-top: 10px;
+            }
+            .chart {
+                margin-left: 15px;
+                border:1px solid #777;
+                border-radius:5px;
+                background:#eee;
+                box-shadow:1px 1px 10px #aaa;
+                float:left;
+            }
+            .dark {
+                background: black;
+            }
+            .source {
+                display:block;
+                background: #333;
+                width:460px;
+                border-radius:5px;
+                padding:10px;
+                box-shadow:inset 2px 2px 5px black;
+                border:1px 1px solid black;
+                margin-top:5px;
+                margin-bottom:20px
+            }
+            .source-chart {
+                float:left;
+            }
+            .source pre {
+                font-size:0.8em;
+                font-family:Consolas,Monaco,"Lucida Console",monospace;
+                font-weight:normal;
+                color: #ddd;
+                text-shadow:1px 1px 1px black;
+            }
+            .source pre .op {
+                color:#0f0;
+            }
+            .source pre .str {
+                color:#DB7209;
+            }
+            .source pre .num{
+                color:#f0f;
+            }
+            .source pre .com{
+                color:#777;
+                text-shadow:1px 1px 4px #111;
+            }
+
+            .source pre .tag{
+                color:#aaf;
+            }
+
+        </style>
+
+    </head>
+
+    <body onload="drawAllCharts();">
+    <div id="content">
+        <script>
+            function drawPieChart() {
+                var pie = OculusPieChart.create("plotPie", 400, 400);
+                pie.chartData = {
+                    dataset:[
+                        {
+                            name: "Fruits",
+                            color: "#aa0000",
+                            value:140
+                        },
+                        {
+                            name: "Vegetables",
+                            color: "#00aa00",
+                            value:30
+                        },
+                        {
+                            name: "Meat",
+                            color: "#0000aa",
+                            value:30
+                        }
+                    ]
+                };
+                pie.settings.line.width = 2;
+                pie.settings.line.color = "#fff";
+                pie.settings.innerText.showAlways = true;
+                pie.settings.outterText.showAlways = false;
+                pie.drawChart();
+            }
+            function drawLineChart() {
+                var lines = OculusLineChart.create("plotLine", 550, 400);
+                lines.name = "Line chart demo";
+                lines.grid.axis.x.name = "Time";
+                lines.grid.axis.x.unit = "s";
+                lines.grid.axis.x.range = [0,4];
+                lines.grid.axis.x.type = "number";
+                
+                lines.grid.axis.y.name = "Percent";
+                lines.grid.axis.y.unit = "%";
+                lines.grid.axis.y.range = [-2.0,2.5];
+                
+                var chartData = {
+                    dataset:[
+                        {
+                            name: "Some data1",
+                            color: "#ff00ff",
+                            data:[
+                                {x:0,   y:1.2,hint:"Small hint"},
+                                {x:1,y:1.6},
+                                {x:2,y:1.8},
+                                {x:3, y:2.0},
+                                {x:4, y:2.0}
+                            ]
+                        },
+                        {
+                            name: "Some data2",
+                            color: "#00ff00",
+                            data:[
+                                {x:0,   y:-1.2},
+                                {x:1,y:0.6},
+                                {x:2,y:-1.8},
+                                {x:3, y:1.0},
+                                {x:4, y:2.5}
+                            ]
+                        }
+                    ]
+                };
+                lines.chartData = chartData;
+                lines.settings.line.fill = false;
+                lines.settings.line.glow = true;
+                lines.drawChart();
+            }
+
+            function drawBarChart() {
+                var bars = OculusBarChart.create("plotBar", 550, 400);
+                bars.name = "Bar chart demo";
+                bars.grid.axis.x.name = "Day";
+                bars.grid.axis.x.unit = null;
+                bars.grid.axis.x.range = [0,4];
+                bars.grid.axis.x.type = "label";
+                bars.grid.axis.x.labels = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+                
+                bars.grid.axis.y.name = "Percent";
+                bars.grid.axis.y.unit = "%";
+                bars.grid.axis.y.range = [-2.0,2.5];
+                
+                var chartData = {
+                    dataset:[
+                        {
+                            name: "Some data1",
+                            color: "#a00",
+                            data:[
+                                {x:0,   y:1.2,hint:"Small hint"},
+                                {x:1,y:1.6},
+                                {x:2,y:1.8},
+                                {x:3, y:2.0},
+                                {x:4, y:2.0}
+                            ]
+                        },
+                        {
+                            name: "Some data2",
+                            color: "#0a0",
+                            data:[
+                                {x:0,   y:-1.2},
+                                {x:1,y:0.6},
+                                {x:2,y:-1.8},
+                                {x:3, y:1.0},
+                                {x:4, y:2.5}
+                            ]
+                        }
+                    ]
+                };
+                bars.chartData = chartData;
+                bars.settings.gloss.on = true;
+                bars.settings.gloss.value = 0.3;
+                bars.settings.gloss.color = "#fff";
+
+                //Changing text color
+                bars.settings.textColor = "#000";
+                bars.grid.settings.text.color = "#000";
+                bars.grid.settings.text.axis.color = "#000";
+                bars.grid.settings.rect.color = "#000";
+                bars.grid.settings.rect.opacity = 0.3;
+                
+
+                bars.drawChart();
+            }
+            
+            function drawAllCharts() {
+                drawPieChart();
+                drawLineChart();
+                drawBarChart();
+            }
+            </script>
+
+        <h1><span class='header-first'>Oculus Charts</spa> <span class='header-second'>Reference</span></h1>
+        <b>Oculus Charts</b> is a javascript library based on <a href="http://raphaeljs.com/">Raphael</a> and is used to display set of data with basic charts: Pie, Bar, Line.
+        <br/>
+        The sources can be found <a href="https://github.com/ishubin/oculus-charts">here on GitHub</a>
+
+        <h2><span class='header-first'>How to use it?</span> <span class='header-second'>It's easy</span></h2>
+        Just define an empty div with custom id in your html document.
+        <div class='source'>
+<pre>
+<span class='tag'>&lt;div </span>id=<span class='str'>"myChart"</span><span class='tag'>&gt;&lt;/div&gt;</span>
+</pre>
+</div>
+
+        Then in your javascript create a chart and specify the id of the plot and its size
+        <div class='source'>
+<pre>
+<span class='op'>var</span> bars = OculusBarChart.create(<span class='str'>"myChart"</span>, <span class='num'>500</span>, <span class='num'>400</span>);
+</pre>
+        </div>
+
+        Then you need to specify chart data and settings. See the following examples.
+
+        <div class="chart-container"> 
+            <h2><span class='header-first'>Pie Chart</span> <span class='header-second'>Example</span></h2>
+            <div class="source source-chart">
+<pre><span class='op'>var</span> pie = OculusPieChart.create(<span class='str'>"plotPie"</span>, <span class='num'>400</span>, <span class='num'>400</span>);
+pie.chartData = {
+    dataset:[
+        {
+            name: <span class='str'>"Fruits"</span>,
+            color: <span class='str'>"#aa0000"</span>,
+            value: <span class='num'>140</span>
+        },
+        {
+            name: <span class='str'>"Vegetables"</span>,
+            color: <span class='str'>"#00aa00"</span>,
+            value: <span class='num'>30</span>
+        },
+        {
+            name: <span class='str'>"Meat"</span>,
+            color: <span class='str'>"#0000aa"</span>,
+            value: <span class='num'>30</span>
+        }
+    ]
+};
+pie.settings.line.width = <span class='num'>2</span>;
+pie.settings.line.color = <span class='str'>"#fff"</span>;
+pie.settings.innerText.showAlways = <span class='op'>true</span>;
+pie.settings.outterText.showAlways = <span class='op'>false</span>;
+pie.drawChart();</pre>
+            </div>
+            <div id="plotPie" class="chart"></div>
+
+        </div>
+        
+        <div class="chart-container"> 
+            <h2><span class='header-first'>Line Chart</span> <span class='header-second'>Example</span></h2>
+            <div class="source source-chart">
+<pre>
+<span class='op'>var</span> lines = OculusLineChart.create(<span class='str'>"plotLine"</span>, <span class='num'>550</span>, <span class='num'>400</span>);
+lines.name = <span class='str'>"Line chart demo"</span>;
+lines.grid.axis.x.name = <span class='str'>"Time"</span>;
+lines.grid.axis.x.unit = <span class='str'>"s"</span>;
+lines.grid.axis.x.range = [<span class='num'>0</span>, <span class='num'>4</span>];
+lines.grid.axis.x.type = <span class='str'>"number"</span>;
+
+lines.grid.axis.y.name = <span class='str'>"Percent"</span>;
+lines.grid.axis.y.unit = <span class='str'>"%"</span>;
+lines.grid.axis.y.range = [<span class='num'>-2.0</span>, <span class='num'>2.5</span>];
+
+<span class='op'>var</span> chartData = {
+    dataset:[
+        {
+            name: <span class='str'>"Some data1"</span>,
+            color: <span class='str'>"#ff00ff"</span>,
+            data:[
+                {x: <span class='num'>0</span>,   y: <span class='num'>1.2</span>, hint:<span class='str'>"Small hint"</span>},
+                {x: <span class='num'>1</span>, y: <span class='num'>1.6</span>},
+                {x: <span class='num'>2</span>, y: <span class='num'>1.8</span>},
+                {x: <span class='num'>3</span>, y: <span class='num'>2.0</span>},
+                {x: <span class='num'>4</span>, y: <span class='num'>2.0</span>}
+            ]
+        },
+        {
+            name: <span class='str'>"Some data2"</span>,
+            color: <span class='str'>"#00ff00"</span>,
+            data:[
+                {x: <span class='num'>0</span>,   y:<span class='num'>-1.2</span>},
+                {x: <span class='num'>1</span>, y: <span class='num'>0.6</span>},
+                {x: <span class='num'>2</span>, y: <span class='num'>-1.8</span>},
+                {x: <span class='num'>3</span>, y: <span class='num'>1.0</span>},
+                {x: <span class='num'>4</span>, y: <span class='num'>2.5</span>}
+            ]
+        }
+    ]
+};
+lines.chartData = chartData;
+lines.settings.line.fill = <span class='op'>false</span>;
+lines.settings.line.glow = <span class='op'>true</span>;
+lines.drawChart();
+</pre>
+            </div>
+            <div id="plotLine" class="chart dark"></div>
+        </div>
+
+        <div class="chart-container"> 
+            <h2><span class='header-first'>Bar Chart</span> <span class='header-second'>Example</span></h2>
+            <div class="source source-chart">
+<pre>
+<span class='op'>var</span> bars = OculusBarChart.create(<span class='str'>"plotBar"</span>, <span class='num'>550</span>, <span class='num'>400</span>);
+bars.name = <span class='str'>"Bar chart demo"</span>;
+bars.grid.axis.x.name = <span class='str'>"Day"</span>;
+bars.grid.axis.x.unit = <span class='op'>null</span>;
+bars.grid.axis.x.range = [<span class='num'>0</span>, <span class='num'>4</span>];
+bars.grid.axis.x.type = <span class='str'>"label"</span>;
+bars.grid.axis.x.labels = [
+    <span class='str'>"Monday"</span>, 
+    <span class='str'>"Tuesday"</span>, 
+    <span class='str'>"Wednesday"</span>, 
+    <span class='str'>"Thursday"</span>, 
+    <span class='str'>"Friday"</span>
+];
+
+bars.grid.axis.y.name = <span class='str'>"Percent"</span>;
+bars.grid.axis.y.unit = <span class='str'>"%"</span>;
+bars.grid.axis.y.range = [<span class='num'>-2.0</span>, <span class='num'>2.5</span>];
+
+var chartData = {
+    dataset:[
+        {
+            name: <span class='str'>"Some data1"</span>,
+            color: <span class='str'>"#a00"</span>,
+            data:[
+                {x: <span class='num'>0</span>,   y: <span class='num'>1.2</span>, hint:<span class='str'>"Small hint"</span>},
+                {x: <span class='num'>1</span>, y: <span class='num'>1.6</span>},
+                {x: <span class='num'>2</span>, y: <span class='num'>1.8</span>},
+                {x: <span class='num'>3</span>, y: <span class='num'>2.0</span>},
+                {x: <span class='num'>4</span>, y: <span class='num'>2.0</span>}
+            ]
+        },
+        {
+            name: <span class='str'>"Some data2"</span>,
+            color: <span class='str'>"#0a0"</span>,
+            data:[
+                {x: <span class='num'>0</span>,   y: <span class='num'>-1.2</span>},
+                {x: <span class='num'>1</span>, y: <span class='num'>0.6</span>},
+                {x: <span class='num'>2</span>, y: <span class='num'>-1.8</span>},
+                {x: <span class='num'>3</span>, y: <span class='num'>1.0</span>},
+                {x: <span class='num'>4</span>, y: <span class='num'>2.5</span>}
+            ]
+        }
+    ]
+};
+bars.chartData = chartData;
+bars.settings.gloss.on = <span class='op'>true</span>;
+bars.settings.gloss.value = <span class='num'>0.3</span>;
+bars.settings.gloss.color = <span class='str'>"#fff"</span>;
+
+<span class='com'>//Changing the text color</span>
+bars.settings.textColor = <span class='str'>"#000"</span>;
+bars.grid.settings.text.color = <span class='str'>"#000"</span>;
+bars.grid.settings.text.axis.color = <span class='str'>"#000"</span>;
+bars.grid.settings.rect.color = <span class='str'>"#000"</span>;
+bars.grid.settings.rect.opacity = <span class='num'>0.3</span>;
+
+bars.drawChart();
+</pre>
+            </div>
+            <div id="plotBar" class="chart"></div>
+        </div>
+    </div>
+    </body>
+</html>
