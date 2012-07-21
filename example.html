@@ -1,22 +1,57 @@
+<!DOCTYPE html>
 <html>
     <head>
         <title>Oculus Charts Example</title>
-        <script type="text/javascript" src="raphael-min.js"></script>
-		<script type="text/javascript" src="jquery-1.7.2.min.js"></script>
-		<script type="text/javascript" src="oculus-charts.js"></script>
+        
+		<script type="text/javascript" src="oculus-charts-1.0-min.js"></script>
 
         <style>
             body {
-                background:#d0d0d0;
-            }
-            h2 { 
+                background:#e0e0e0;
                 font-family:helvetica;
-                font-size:2em;
+                font-size:1.1em;
+                color: #333;
+            }
+            #content {
+                width:1060px;
+            }
+            a, a:visited, a:active {
+                font-family:helvetica;
+                color: #254263;
+                text-decoration: none;
+                font-weight: bold;
+                text-decoration: none;
+                text-shadow: 0px 1px 0px #fff;
+            }
+            a:hover {
+                color: #AD4A07;
+            }
+            h1, h2 { 
+                font-family:helvetica;
                 font-weight:bold;
                 text-transform:uppercase;
-                color:black;
+                
                 text-shadow:0px 0px 2px #fff;
                 margin:0px;
+            }
+            h1 { 
+                font-size:2.5em;
+                color: #254263;
+                margin-bottom: 20px;
+            }
+            span.header-first {
+                color: #254263;
+                text-shadow: -1px -1px 0px #011E40, 0px 1px 0px #fff;
+            }
+            span.header-second {
+                color: #F77C00;
+                text-shadow: -1px -1px 0px #CF6700, 0px 1px 0px #fff;
+            }
+            h2 {
+                margin-top: 30px;
+                margin-bottom: 10px;
+                font-size:2em;
+                color: #254263;
             }
             .chart-container {
                 clear: both;
@@ -26,7 +61,7 @@
                 margin-left: 15px;
                 border:1px solid #777;
                 border-radius:5px;
-                background:#ddd;
+                background:#eee;
                 box-shadow:1px 1px 10px #aaa;
                 float:left;
             }
@@ -34,17 +69,21 @@
                 background: black;
             }
             .source {
-                float:left;
                 display:block;
                 background: #333;
-                width:500px;
+                width:460px;
                 border-radius:5px;
-                padding:5px;
+                padding:10px;
                 box-shadow:inset 2px 2px 5px black;
                 border:1px 1px solid black;
+                margin-top:5px;
+                margin-bottom:20px
+            }
+            .source-chart {
+                float:left;
             }
             .source pre {
-                font-size:12pt;
+                font-size:0.8em;
                 font-family:Consolas,Monaco,"Lucida Console",monospace;
                 font-weight:normal;
                 color: #ddd;
@@ -61,13 +100,19 @@
             }
             .source pre .com{
                 color:#777;
+                text-shadow:1px 1px 4px #111;
+            }
+
+            .source pre .tag{
+                color:#aaf;
             }
 
         </style>
 
     </head>
 
-    <body>
+    <body onload="drawAllCharts();">
+    <div id="content">
         <script>
             function drawPieChart() {
                 var pie = OculusPieChart.create("plotPie", 400, 400);
@@ -195,16 +240,38 @@
                 bars.drawChart();
             }
             
-            $(function(){
+            function drawAllCharts() {
                 drawPieChart();
                 drawLineChart();
                 drawBarChart();
-            });
+            }
             </script>
 
+        <h1><span class='header-first'>Oculus Charts</spa> <span class='header-second'>Reference</span></h1>
+        <b>Oculus Charts</b> is a javascript library based on <a href="http://raphaeljs.com/">Raphael</a> and is used to display set of data with basic charts: Pie, Bar, Line.
+        <br/>
+        The sources can be found <a href="https://github.com/ishubin/oculus-charts">here on GitHub</a>
+
+        <h2><span class='header-first'>How to use it?</span> <span class='header-second'>It's easy</span></h2>
+        Just define an empty div with custom id in your html document.
+        <div class='source'>
+<pre>
+<span class='tag'>&lt;div </span>id=<span class='str'>"myChart"</span><span class='tag'>&gt;&lt;/div&gt;</span>
+</pre>
+</div>
+
+        Then in your javascript create a chart and specify the id of the plot and its size
+        <div class='source'>
+<pre>
+<span class='op'>var</span> bars = OculusBarChart.create(<span class='str'>"myChart"</span>, <span class='num'>500</span>, <span class='num'>400</span>);
+</pre>
+        </div>
+
+        Then you need to specify chart data and settings. See the following examples.
+
         <div class="chart-container"> 
-            <h2>Pie Chart</h2>
-            <div class="source">
+            <h2><span class='header-first'>Pie Chart</span> <span class='header-second'>Example</span></h2>
+            <div class="source source-chart">
 <pre><span class='op'>var</span> pie = OculusPieChart.create(<span class='str'>"plotPie"</span>, <span class='num'>400</span>, <span class='num'>400</span>);
 pie.chartData = {
     dataset:[
@@ -236,8 +303,8 @@ pie.drawChart();</pre>
         </div>
         
         <div class="chart-container"> 
-            <h2>Line chart</h2>
-            <div class="source">
+            <h2><span class='header-first'>Line Chart</span> <span class='header-second'>Example</span></h2>
+            <div class="source source-chart">
 <pre>
 <span class='op'>var</span> lines = OculusLineChart.create(<span class='str'>"plotLine"</span>, <span class='num'>550</span>, <span class='num'>400</span>);
 lines.name = <span class='str'>"Line chart demo"</span>;
@@ -256,7 +323,7 @@ lines.grid.axis.y.range = [<span class='num'>-2.0</span>, <span class='num'>2.5<
             name: <span class='str'>"Some data1"</span>,
             color: <span class='str'>"#ff00ff"</span>,
             data:[
-                {x: <span class='num'>0</span>,   y: 1.2, hint:<span class='str'>"Small hint"</span>},
+                {x: <span class='num'>0</span>,   y: <span class='num'>1.2</span>, hint:<span class='str'>"Small hint"</span>},
                 {x: <span class='num'>1</span>, y: <span class='num'>1.6</span>},
                 {x: <span class='num'>2</span>, y: <span class='num'>1.8</span>},
                 {x: <span class='num'>3</span>, y: <span class='num'>2.0</span>},
@@ -286,8 +353,8 @@ lines.drawChart();
         </div>
 
         <div class="chart-container"> 
-            <h2>Bar chart</h2>
-            <div class="source">
+            <h2><span class='header-first'>Bar Chart</span> <span class='header-second'>Example</span></h2>
+            <div class="source source-chart">
 <pre>
 <span class='op'>var</span> bars = OculusBarChart.create(<span class='str'>"plotBar"</span>, <span class='num'>550</span>, <span class='num'>400</span>);
 bars.name = <span class='str'>"Bar chart demo"</span>;
@@ -350,5 +417,6 @@ bars.drawChart();
             </div>
             <div id="plotBar" class="chart"></div>
         </div>
+    </div>
     </body>
 </html>
