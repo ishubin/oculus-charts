@@ -1,10 +1,17 @@
-[Oculus Charts](http://ishubin.github.com/oculus-charts/) - Javascript charts for simple graph display in a browser
+[Oculus Charts](http://ishubin.github.com/oculus-charts/) - Javascript charts for simple graph display in your browser
 ===================
 
 Demo
 --------------------
 
 Try some live examples [here](http://ishubin.github.com/oculus-charts/)
+
+Download
+--------------------
+
+Oculus Charts library can be found here [https://github.com/ishubin/oculus-charts](https://github.com/ishubin/oculus-charts)
+
+[oculus-charts-1.0-min.js](https://raw.github.com/ishubin/oculus-charts/master/oculus-charts-1.0-min.js)
 
 
 How to use it?
@@ -159,6 +166,6 @@ Bar Chart
 License
 --------------------
 
-This library is distributed under Apache 2 license. For more information please read [license](http://apache.org)
+Oculus Charts library is distributed under Apache 2 license. For more information please read [license](http://apache.org)
 
 
