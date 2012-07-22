@@ -1000,6 +1000,9 @@ OculusPieChart.addAll({
             for(gp in globalPieces){
                 globalPieces[gp].hoverPiece.toFront();
             }
+            if ( this.settings.line.width > 0 ) {
+                r.circle(cx, cy, this.settings.line.width*2).attr({stroke:this.settings.line.color, "fill":this.settings.line.color});
+            }
         }
     }
 });

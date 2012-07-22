@@ -3,7 +3,8 @@
     <head>
         <title>Oculus Charts Example</title>
         
-		<script type="text/javascript" src="oculus-charts-1.0-min.js"></script>
+		<script type="text/javascript" src="oculus-charts.js"></script>
+        <script type="text/javascript" src="raphael-min.js"></script>
 
         <style>
             body {
@@ -135,7 +136,7 @@
                         }
                     ]
                 };
-                pie.settings.line.width = 2;
+                pie.settings.line.width = 6;
                 pie.settings.line.color = "#fff";
                 pie.settings.innerText.showAlways = true;
                 pie.settings.outterText.showAlways = false;
@@ -253,10 +254,11 @@
         The sources can be found <a href="https://github.com/ishubin/oculus-charts">here on GitHub</a>
 
         <h2><span class='header-first'>How to use it?</span> <span class='header-second'>It's easy</span></h2>
-        Just define an empty div with custom id in your html document.
+        Just define an empty div with custom id in your html document. The charts background color should be specified within div element.
+        You can later change color settings for chart in your javascript.
         <div class='source'>
 <pre>
-<span class='tag'>&lt;div </span>id=<span class='str'>"myChart"</span><span class='tag'>&gt;&lt;/div&gt;</span>
+<span class='tag'>&lt;div </span>id=<span class='str'>"myChart"</span> style=<span class='str'>"background:black;"</span> <span class='tag'>&gt;&lt;/div&gt;</span>
 </pre>
 </div>
 
@@ -292,7 +294,7 @@ pie.chartData = {
         }
     ]
 };
-pie.settings.line.width = <span class='num'>2</span>;
+pie.settings.line.width = <span class='num'>6</span>;
 pie.settings.line.color = <span class='str'>"#fff"</span>;
 pie.settings.innerText.showAlways = <span class='op'>true</span>;
 pie.settings.outterText.showAlways = <span class='op'>false</span>;
