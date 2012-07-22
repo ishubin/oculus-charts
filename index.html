@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Oculus Charts - Reference</title>
+        <title>Oculus Charts Example</title>
         
-		<script type="text/javascript" src="https://raw.github.com/ishubin/oculus-charts/master/oculus-charts-1.0-min.js"></script>
-
+        <script type="text/javascript" src="./bin/oculus-charts-1.0-min.js"></script>
         <style>
             body {
                 background:#e0e0e0;
@@ -135,7 +134,7 @@
                         }
                     ]
                 };
-                pie.settings.line.width = 2;
+                pie.settings.line.width = 6;
                 pie.settings.line.color = "#fff";
                 pie.settings.innerText.showAlways = true;
                 pie.settings.outterText.showAlways = false;
@@ -247,16 +246,20 @@
             }
             </script>
 
-        <h1><span class='header-first'>Oculus Charts</spa> <span class='header-second'>Reference</span></h1>
+        <h1><span class='header-first'>Oculus Charts</span> <span class='header-second'>Reference</span></h1>
         <b>Oculus Charts</b> is a javascript library based on <a href="http://raphaeljs.com/">Raphael</a> and is used to display set of data with basic charts: Pie, Bar, Line.
         <br/>
         The sources can be found <a href="https://github.com/ishubin/oculus-charts">here on GitHub</a>
 
+        <h2><span class='header-first'>Download</span> <span class='header-second'>v1.0</span></h2>
+        <a href="http://ishubin.github.com/oculus-charts/bin/oculus-charts-1.0-min.js"><img src="./images/download.png"/> oculus-charts-1.0-min.js</a>        
+
         <h2><span class='header-first'>How to use it?</span> <span class='header-second'>It's easy</span></h2>
-        Just define an empty div with custom id in your html document.
+        Just define an empty div with custom id in your html document. The charts background color should be specified within div element.
+        You can later change color settings for chart in your javascript.
         <div class='source'>
 <pre>
-<span class='tag'>&lt;div </span>id=<span class='str'>"myChart"</span><span class='tag'>&gt;&lt;/div&gt;</span>
+<span class='tag'>&lt;div </span>id=<span class='str'>"myChart"</span> style=<span class='str'>"background:black;"</span> <span class='tag'>&gt;&lt;/div&gt;</span>
 </pre>
 </div>
 
@@ -292,7 +295,7 @@ pie.chartData = {
         }
     ]
 };
-pie.settings.line.width = <span class='num'>2</span>;
+pie.settings.line.width = <span class='num'>6</span>;
 pie.settings.line.color = <span class='str'>"#fff"</span>;
 pie.settings.innerText.showAlways = <span class='op'>true</span>;
 pie.settings.outterText.showAlways = <span class='op'>false</span>;
@@ -416,6 +419,9 @@ bars.drawChart();
 </pre>
             </div>
             <div id="plotBar" class="chart"></div>
+        </div>
+        <div class="chart-container"> 
+        <h2><span class='header-first'>License</span></h2>
         </div>
     </div>
     </body>
