@@ -3,7 +3,7 @@
     <head>
         <title>Oculus Charts Example</title>
         
-        <script type="text/javascript" src="./bin/oculus-charts-1.0-min.js"></script>
+        <script type="text/javascript" src="./bin/oculus-charts-1.0-min-all-dep.js"></script>
         <style>
             body {
                 background:#e0e0e0;
@@ -76,7 +76,7 @@
                 box-shadow:inset 2px 2px 5px black;
                 border:1px 1px solid black;
                 margin-top:5px;
-                margin-bottom:20px
+                margin-bottom:20px;
             }
             .source-chart {
                 float:left;
@@ -104,6 +104,17 @@
 
             .source pre .tag{
                 color:#aaf;
+            }
+
+            .download-box {
+                padding:10px;
+                background: white;
+                border:1px solid #aaa;
+                border-radius: 5px;
+                width:460px;
+                box-shadow: 1px 1px 2px #ccc;
+                margin-bottom:10px;
+                color:#444;
             }
 
         </style>
@@ -252,7 +263,14 @@
         The sources can be found <a href="https://github.com/ishubin/oculus-charts">here on GitHub</a>
 
         <h2><span class='header-first'>Download</span> <span class='header-second'>v1.0</span></h2>
-        <a href="http://ishubin.github.com/oculus-charts/bin/oculus-charts-1.0-min.js"><img src="./images/download.png"/> oculus-charts-1.0-min.js</a>        
+        <div class="download-box">
+            Minified Oculus Charts library: <br/><br/>
+            <a href="./bin/oculus-charts-1.0-min.js"><img src="./images/download.png"/> oculus-charts-1.0-min.js</a>
+        </div>
+        <div class="download-box">
+            Minified Oculus Charts library with <a href="http://raphaeljs.com/">Raphael</a> library included: <br/><br/>
+            <a href="./bin/oculus-charts-1.0-min-all-dep.js"><img src="./images/download.png"/> oculus-charts-1.0-min-all-dep.js</a>
+        </div>
 
         <h2><span class='header-first'>How to use it?</span> <span class='header-second'>It's easy</span></h2>
         Just define an empty div with custom id in your html document. The charts background color should be specified within div element.
@@ -421,7 +439,16 @@ bars.drawChart();
             <div id="plotBar" class="chart"></div>
         </div>
         <div class="chart-container"> 
-        <h2><span class='header-first'>License</span></h2>
+            <h2><span class='header-first'>License</span> <span class='header-second'>Information</span></h2>
+            Oculus Charts library is distributed under Apache License, Version 2.0. For more information please read <a href="http://www.apache.org/licenses/LICENSE-2.0.html">license text</a>
+
+            <h2><span class='header-first'>Contact</span> <span class='header-second'>Author</span></h2>
+            Developed by Ivan Shubin. <br/>
+            You can send your feedback using the following form:
+
+<table cellspacing="0" cellpadding="0" border="0"><tr><td><iframe width="400" height="545" frameborder="0" src="http://www.foxyform.com/form.php?id=285042&sec_hash=1b125c64c21"></iframe></td></tr><tr><td align="center"><a style="font:8px Arial;color:#5C5C5C;" href="http://www.foxyform.com">foxyform.com</a></td></tr></table>
+
+            
         </div>
     </div>
     </body>
