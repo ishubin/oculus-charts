@@ -15,7 +15,7 @@ Minified Oculus Charts library:
 [oculus-charts-1.0.1-min.js](http://ishubin.github.com/oculus-charts/bin/oculus-charts-1.0.1-min.js)
 
 Minified Oculus Charts library with Raphael library included: 
-[oculus-charts-1.0.1-min-all-dep.js](http://ishubin.github.com/oculus-charts/bin/oculus-charts-1.0.1-min-all-dep.js)
+[oculus-charts-1.0.1-all-dep.js](http://ishubin.github.com/oculus-charts/bin/oculus-charts-1.0.1-all-dep.js)
 
 
 How to use it?
