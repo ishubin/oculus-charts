@@ -11,7 +11,11 @@ Download
 
 Oculus Charts library can be found here [https://github.com/ishubin/oculus-charts](https://github.com/ishubin/oculus-charts)
 
-[oculus-charts-1.0-min.js](https://raw.github.com/ishubin/oculus-charts/master/oculus-charts-1.0-min.js)
+Minified Oculus Charts library:
+[oculus-charts-1.0-min.js](http://ishubin.github.com/oculus-charts/bin/oculus-charts-1.0-min.js)
+
+Minified Oculus Charts library with Raphael library included: 
+[oculus-charts-1.0-min-all-dep.js](http://ishubin.github.com/oculus-charts/bin/oculus-charts-1.0-min-all-dep.js)
 
 
 How to use it?
@@ -53,7 +57,7 @@ Pie Chart
     pie.settings.outterText.showAlways = false;
     pie.drawChart();
 
-![image](http://ishubin.hithub.com/oculus-charts/images/pie-chart-example.png)
+![image](http://ishubin.github.com/oculus-charts/images/pie-chart-example.png)
 
 Line Chart
 --------------------
@@ -99,7 +103,7 @@ Line Chart
     lines.settings.line.glow = true;
     lines.drawChart();
 
-![image](http://ishubin.hithub.com/oculus-charts/images/line-chart-example.png)
+![image](http://ishubin.github.com/oculus-charts/images/line-chart-example.png)
 
 Bar Chart
 --------------------
@@ -161,11 +165,11 @@ Bar Chart
 
     bars.drawChart();
 
-![image](http://ishubin.hithub.com/oculus-charts/images/var-chart-example.png)
+![image](http://ishubin.github.com/oculus-charts/images/bar-chart-example.png)
 
 License
 --------------------
 
-Oculus Charts library is distributed under Apache 2 license. For more information please read [license](http://apache.org)
+Oculus Charts library is distributed under Apache License, Version 2.0. For more information please read [license text](http://www.apache.org/licenses/LICENSE-2.0.html)
 
 
