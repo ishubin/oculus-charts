@@ -320,7 +320,7 @@ OculusGrid.addAll({
 				//Rotating the text to 45 degrees so it would fit better
 				
 				if(this.settings.axis.x.labels.compactForm == true){
-					text.attr({rotation:"-45 "+x+" "+this.rect.bottom,translation:"0,10", "text-anchor":"end"});
+					text.attr({"transform":"r-45","text-anchor":"end"});
 				}
 			}
         }
@@ -362,7 +362,7 @@ OculusGrid.addAll({
             if(this.axis.y.unit!=null){
                 str += " ("+this.axis.y.unit + ")";
             }
-            r.text(this.rect.left - 90, Math.round((this.rect.bottom-this.rect.top)/2),"" + str).attr({ rotation:"-90", stroke:"none", fill:this.settings.text.color, "font-size":this.settings.text.fontSize});
+            r.text(this.rect.left - 90, Math.round((this.rect.bottom-this.rect.top)/2),"" + str).attr({ transform:"r-90", stroke:"none", fill:this.settings.text.color, "font-size":this.settings.text.fontSize});
         }
     }
 });
@@ -505,7 +505,7 @@ OculusChart.addAll({
 	},
 	
 	//Creates a hint box for the specified value on a plot, fills it with text and returns a refference to this Raphael object
-	drawHint: function (x, y, caption, color, hintText){
+	drawHint: function (x, y, ofx, ofy, caption, color, hintText){
 	    var r = this.raphael;
 		var p = this.grid.translateToScreen(x, y);
 		
@@ -569,11 +569,19 @@ OculusChart.addAll({
 	        path += points[i][0]+" "+points[i][1];
         }
         var hset = r.set();
-        hset.push(r.path(path).attr({translation:p.x+","+p.y, stroke:sh.strokeColor, "stroke-width":sh.strokeWidth, fill:sh.background}));
+        hset.push(r.path(path).attr({transform:"t" + (p.x + ofx)+"," + (p.y + ofy), stroke:sh.strokeColor, "stroke-width":sh.strokeWidth, fill:sh.background}));
         htextset.toFront();
-        if(xi<0) htextset.translate(-w, 0);
-	    if(yi<0) htextset.translate(0, -h);
-	    hset.push(htextset);
+	    
+        var ttx=ofx, tty=ofy;
+        if ( xi < 0 ) {
+            ttx = ofx-w;
+        }
+        if ( yi < 0 ) {
+            tty = ofy-h;
+        }
+        htextset.transform("t" + ttx + "," + tty);
+        
+        hset.push(htextset);
 		return hset;
 	},
 	//Clears everything on the plot and draws chart again
@@ -697,7 +705,7 @@ OculusLineChart.addAll({
 							lineChart: this,
 							onover: function(){
 								if(this.hint == null)   {
-    								this.hint =  lineChart.drawHint(this.ox, this.oy, this.caption, this.color, this.hintText).attr({"opacity":0.0});
+    								this.hint =  lineChart.drawHint(this.ox, this.oy, 0, 0, this.caption, this.color, this.hintText).attr({"opacity":0.0});
     							}
     							this.pathLine.toFront();
 								this.hint.toFront().animate({"fill-opacity":0.8, "opacity":1.0},500, ">");
@@ -829,7 +837,7 @@ OculusBarChart.addAll({
                                     }
 									this.bar.animate({"fill-opacity":this.settings.gloss.value}, 500, ">");
 									if(this.hint == null){
-							            this.hint = barChart.drawHint(this.ox, this.oy, this.caption, this.color, this.hintText).attr({translation:Math.round(this.offset+bw/2)+",0"})
+							            this.hint = barChart.drawHint(this.ox, this.oy, Math.round(this.offset+bw/2), 0, this.caption, this.color, this.hintText);
 									}
 									this.hint.toFront();
 							    },
